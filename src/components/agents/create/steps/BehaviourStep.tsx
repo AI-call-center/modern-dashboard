@@ -147,26 +147,26 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
         </div>
 
         {/* Call Variables */}
-        <div className="rounded-lg overflow-hidden">
-          <div className="bg-gray-800/50 p-4 space-y-2">
+        <div className="rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800/50">
+          <div className="p-4 space-y-2">
             <div className="flex items-center space-x-2">
-              <h3 className="text-base font-medium text-white flex items-center space-x-2">
-                <span className="i-heroicons-squares-2x2-20-solid text-yellow-400" />
+              <h3 className="text-base font-medium text-gray-900 dark:text-white flex items-center space-x-2">
+                <span className="i-heroicons-squares-2x2-20-solid text-yellow-500 dark:text-yellow-400" />
                 <span>Call variables</span>
               </h3>
             </div>
-            <p className="text-sm text-gray-400">
-              Define variables that can be passed <span className="text-yellow-400">before</span> making the call and used in
-              the prompt like <span className="text-yellow-400">{'{variable_name}'}</span>.
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Define variables that can be passed <span className="text-yellow-500 dark:text-yellow-400">before</span> making the call and used in
+              the prompt like <span className="text-yellow-500 dark:text-yellow-400">{'{variable_name}'}</span>.
             </p>
           </div>
 
-          <div className="bg-gray-900/40">
+          <div className="bg-white dark:bg-gray-900/40">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-700/50">
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-400">Variable name</th>
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-400">Default value</th>
+                <tr className="border-b border-gray-200 dark:border-gray-700/50">
+                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Variable name</th>
+                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Default value</th>
                   <th className="w-12"></th>
                 </tr>
               </thead>
@@ -177,7 +177,7 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="border-b border-gray-700/50 last:border-0"
+                    className="border-b border-gray-200 dark:border-gray-700/50 last:border-0"
                   >
                     <td className="p-2">
                       <input
@@ -186,9 +186,9 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
                         onChange={(e) => updateVariable(index, 'key', e.target.value)}
                         placeholder="Ex: customer_name"
                         className="w-full px-3 py-2 rounded-md
-                          bg-gray-800 text-gray-200 placeholder-gray-500
-                          border border-gray-700 focus:border-navy-400
-                          focus:ring-1 focus:ring-navy-400
+                          bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 
+                          placeholder-gray-500 border border-gray-200 dark:border-gray-700
+                          focus:border-navy-400 focus:ring-1 focus:ring-navy-400
                           text-sm transition-colors"
                       />
                     </td>
@@ -199,9 +199,9 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
                         onChange={(e) => updateVariable(index, 'value', e.target.value)}
                         placeholder="Ex: John"
                         className="w-full px-3 py-2 rounded-md
-                          bg-gray-800 text-gray-200 placeholder-gray-500
-                          border border-gray-700 focus:border-navy-400
-                          focus:ring-1 focus:ring-navy-400
+                          bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200
+                          placeholder-gray-500 border border-gray-200 dark:border-gray-700
+                          focus:border-navy-400 focus:ring-1 focus:ring-navy-400
                           text-sm transition-colors"
                       />
                     </td>
@@ -210,7 +210,7 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => removeVariable(index)}
-                        className="p-1 text-red-400 hover:text-red-300 transition-colors"
+                        className="p-1 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
                       >
                         <TrashIcon className="h-5 w-5" />
                       </motion.button>
@@ -224,9 +224,9 @@ export default function BehaviourStep({ data, onChange }: BehaviourStepProps) {
                       whileTap={{ scale: 0.99 }}
                       onClick={addVariable}
                       className="w-full flex items-center justify-center space-x-2 px-4 py-2
-                        text-gray-400 hover:text-white text-sm
-                        bg-gray-800/50 hover:bg-gray-800 
-                        border border-gray-700 rounded-md
+                        text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm
+                        bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800
+                        border border-gray-200 dark:border-gray-700 rounded-md
                         transition-all duration-150"
                     >
                       <PlusIcon className="h-4 w-4" />

@@ -5,6 +5,7 @@ import BasicInfoStep from './steps/BasicInfoStep';
 import BehaviourStep from './steps/BehaviourStep';
 import KnowledgeStep from './steps/KnowledgeStep';
 import DataCollectionStep from './steps/DataCollectionStep';
+import ToolsStep from './steps/ToolsStep';
 import ActionsStep from './steps/ActionsStep';
 
 export type FormData = {
@@ -26,6 +27,15 @@ export type FormData = {
   dataCollection: {
     variables: Array<{ name: string; description: string }>;
   };
+  tools: {
+    tools: Array<{
+      id: string;
+      name: string;
+      description: string;
+      enabled: boolean;
+      config: { [key: string]: any };
+    }>;
+  };
   actions: {
     selectedActions: string[];
   };
@@ -36,6 +46,7 @@ const steps = [
   { id: 'behaviour', title: 'Behaviour', icon: 'AdjustmentsHorizontalIcon' },
   { id: 'knowledge', title: 'Knowledge', icon: 'BookOpenIcon' },
   { id: 'data-collection', title: 'Data Collection', icon: 'DocumentTextIcon' },
+  { id: 'tools', title: 'Tools', icon: 'WrenchScrewdriverIcon' },
   { id: 'actions', title: 'Actions', icon: 'BoltIcon' },
 ];
 
@@ -47,6 +58,39 @@ export default function CreateAgentForm() {
     behaviour: { greeting: '', prompt: '', variables: [] },
     knowledge: { llm: 'GPT 4.0', customKnowledge: '', files: [] },
     dataCollection: { variables: [] },
+    tools: {
+      tools: [
+        {
+          id: 'end-call',
+          name: 'End Call',
+          description: 'Ends the call.',
+          enabled: false,
+          config: {
+            whenToEnd: 'End the call after saying goodbye to the customer.'
+          }
+        },
+        {
+          id: 'appointment',
+          name: 'Appointment Scheduling',
+          description: 'Real-time booking scheduling.',
+          enabled: false,
+          config: {
+            calendarService: 'Google Calendar'
+          }
+        },
+        {
+          id: 'transfer',
+          name: 'Call Transfer',
+          description: 'Transfers the call to a real assistant.',
+          enabled: false,
+          config: {
+            countryCode: '+1',
+            phoneNumber: '',
+            whenToTransfer: 'Transfer the call when the customer asks for a real assistant.'
+          }
+        }
+      ]
+    },
     actions: { selectedActions: [] },
   });
 
@@ -91,6 +135,8 @@ export default function CreateAgentForm() {
         case 3:
           return DataCollectionStep;
         case 4:
+          return ToolsStep;
+        case 5:
           return ActionsStep;
         default:
           return BasicInfoStep;

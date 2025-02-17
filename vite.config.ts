@@ -10,5 +10,18 @@ export default defineConfig({
   },
   css: {
     postcss: './postcss.config.js'
+  },
+  base: '/',
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@headlessui/react', '@heroicons/react', 'framer-motion']
+        }
+      }
+    }
   }
 })

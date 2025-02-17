@@ -1,9 +1,14 @@
 services:
   - type: web
     name: modern-dashboard
-    env: static
+    env: node
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: PORT
+        value: 10000
     routes:
       - type: rewrite
         source: /*

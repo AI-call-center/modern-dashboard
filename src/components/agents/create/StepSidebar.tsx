@@ -5,6 +5,7 @@ import {
   BookOpenIcon,
   DocumentTextIcon,
   BoltIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 
 const icons = {
@@ -13,6 +14,7 @@ const icons = {
   BookOpenIcon,
   DocumentTextIcon,
   BoltIcon,
+  WrenchScrewdriverIcon,
 };
 
 interface StepSidebarProps {

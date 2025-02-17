@@ -35,7 +35,21 @@ const defaultTools: Tool[] = [
     description: 'Real-time booking scheduling.',
     enabled: false,
     config: {
-      calendarService: 'Google Calendar'
+      calendarService: 'Google Calendar',
+      apiKey: '',
+      calendarId: '',
+      integrationSettings: {
+        'Google Calendar': {
+          apiKey: '',
+          calendarId: ''
+        },
+        'Cal.com': {
+          apiKey: ''
+        },
+        'Calendly': {
+          apiKey: ''
+        }
+      }
     }
   },
   {
@@ -159,31 +173,87 @@ export default function ToolsStep({ data, onChange }: ToolsStepProps) {
                   )}
 
                   {tool.id === 'appointment' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Calendar Integration
-                      </label>
-                      <div className="mt-1 relative">
-                        <select
-                          value={tool.config.calendarService}
-                          onChange={(e) => updateToolConfig(tool.id, 'calendarService', e.target.value)}
-                          className="block w-full rounded-md border border-gray-300 dark:border-gray-600
-                            bg-white dark:bg-gray-800 px-3 py-2
-                            text-gray-900 dark:text-white shadow-sm
-                            focus:border-primary-light dark:focus:border-primary-dark
-                            focus:outline-none focus:ring-1
-                            focus:ring-primary-light dark:focus:ring-primary-dark
-                            appearance-none pr-10 sm:text-sm"
-                        >
-                          {calendarServices.map((service) => (
-                            <option key={service} value={service}>
-                              {service}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                          <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Calendar Integration
+                        </label>
+                        <div className="mt-1 relative">
+                          <select
+                            value={tool.config.calendarService}
+                            onChange={(e) => updateToolConfig(tool.id, 'calendarService', e.target.value)}
+                            className="block w-full rounded-md border border-gray-300 dark:border-gray-600
+                              bg-white dark:bg-gray-800 px-3 py-2
+                              text-gray-900 dark:text-white shadow-sm
+                              focus:border-primary-light dark:focus:border-primary-dark
+                              focus:outline-none focus:ring-1
+                              focus:ring-primary-light dark:focus:ring-primary-dark
+                              appearance-none pr-10 sm:text-sm"
+                          >
+                            {calendarServices.map((service) => (
+                              <option key={service} value={service}>
+                                {service}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                            <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+                          </div>
                         </div>
+                      </div>
+
+                      <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg space-y-4">
+                        <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                          Integration Settings
+                        </h4>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            API Key<span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="password"
+                            value={tool.config.integrationSettings[tool.config.calendarService].apiKey}
+                            onChange={(e) => {
+                              const newSettings = { ...tool.config.integrationSettings };
+                              newSettings[tool.config.calendarService].apiKey = e.target.value;
+                              updateToolConfig(tool.id, 'integrationSettings', newSettings);
+                            }}
+                            className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                              bg-white dark:bg-gray-800 px-3 py-2
+                              text-gray-900 dark:text-white shadow-sm
+                              focus:border-primary-light dark:focus:border-primary-dark
+                              focus:outline-none focus:ring-1
+                              focus:ring-primary-light dark:focus:ring-primary-dark
+                              sm:text-sm"
+                            placeholder="Enter your API key"
+                          />
+                        </div>
+
+                        {tool.config.calendarService === 'Google Calendar' && (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Calendar ID
+                            </label>
+                            <input
+                              type="text"
+                              value={tool.config.integrationSettings['Google Calendar'].calendarId}
+                              onChange={(e) => {
+                                const newSettings = { ...tool.config.integrationSettings };
+                                newSettings['Google Calendar'].calendarId = e.target.value;
+                                updateToolConfig(tool.id, 'integrationSettings', newSettings);
+                              }}
+                              className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                bg-white dark:bg-gray-800 px-3 py-2
+                                text-gray-900 dark:text-white shadow-sm
+                                focus:border-primary-light dark:focus:border-primary-dark
+                                focus:outline-none focus:ring-1
+                                focus:ring-primary-light dark:focus:ring-primary-dark
+                                sm:text-sm"
+                              placeholder="Enter your calendar ID"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

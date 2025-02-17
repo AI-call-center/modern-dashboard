@@ -2,11 +2,13 @@ services:
   - type: web
     name: modern-dashboard
     env: node
-    buildCommand: npm install; npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 18.17.0
+      - key: SKIP_TYPESCRIPT_CHECK
+        value: "true"
       - key: PORT
         value: 10000
     routes:

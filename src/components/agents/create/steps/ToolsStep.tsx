@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Switch } from '@headlessui/react';
 import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/outline';
@@ -78,6 +79,36 @@ const countryCodes = [
 ];
 
 export default function ToolsStep({ data, onChange }: ToolsStepProps) {
+  // Initialize integration settings if they don't exist
+  const initializeSettings = () => {
+    if (!data.tools.find(t => t.id === 'appointment')?.config.integrationSettings) {
+      const appointmentTool = data.tools.find(t => t.id === 'appointment');
+      if (appointmentTool) {
+        updateTool('appointment', {
+          config: {
+            ...appointmentTool.config,
+            integrationSettings: {
+              'Google Calendar': {
+                apiKey: '',
+                calendarId: ''
+              },
+              'Cal.com': {
+                apiKey: ''
+              },
+              'Calendly': {
+                apiKey: ''
+              }
+            }
+          }
+        });
+      }
+    }
+  };
+
+  // Call initialization on mount
+  React.useEffect(() => {
+    initializeSettings();
+  }, []);
   const updateTool = (toolId: string, updates: Partial<Tool>) => {
     const newTools = data.tools.map(tool => 
       tool.id === toolId ? { ...tool, ...updates } : tool
@@ -213,9 +244,15 @@ export default function ToolsStep({ data, onChange }: ToolsStepProps) {
                           </label>
                           <input
                             type="password"
-                            value={tool.config.integrationSettings[tool.config.calendarService].apiKey}
+                            value={tool.config.integrationSettings?.[tool.config.calendarService]?.apiKey || ''}
                             onChange={(e) => {
-                              const newSettings = { ...tool.config.integrationSettings };
+                              const newSettings = { ...tool.config.integrationSettings } || {};
+                              if (!newSettings[tool.config.calendarService]) {
+                                newSettings[tool.config.calendarService] = { apiKey: '' };
+                                if (tool.config.calendarService === 'Google Calendar') {
+                                  newSettings[tool.config.calendarService].calendarId = '';
+                                }
+                              }
                               newSettings[tool.config.calendarService].apiKey = e.target.value;
                               updateToolConfig(tool.id, 'integrationSettings', newSettings);
                             }}
@@ -237,9 +274,12 @@ export default function ToolsStep({ data, onChange }: ToolsStepProps) {
                             </label>
                             <input
                               type="text"
-                              value={tool.config.integrationSettings['Google Calendar'].calendarId}
+                              value={tool.config.integrationSettings?.['Google Calendar']?.calendarId || ''}
                               onChange={(e) => {
-                                const newSettings = { ...tool.config.integrationSettings };
+                                const newSettings = { ...tool.config.integrationSettings } || {};
+                                if (!newSettings['Google Calendar']) {
+                                  newSettings['Google Calendar'] = { apiKey: '', calendarId: '' };
+                                }
                                 newSettings['Google Calendar'].calendarId = e.target.value;
                                 updateToolConfig(tool.id, 'integrationSettings', newSettings);
                               }}

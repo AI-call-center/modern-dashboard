@@ -98,8 +98,11 @@ export default function Templates() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search templates..."
-              className="w-full pl-10 pr-4 py-3 rounded-lg bg-navy-800 text-white border-none
-                placeholder-gray-400 focus:ring-2 focus:ring-primary-light focus:outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-navy-800 text-gray-900 dark:text-white
+                border border-gray-200 dark:border-transparent
+                placeholder-gray-500 dark:placeholder-gray-400
+                focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent
+                focus:outline-none shadow-sm"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg

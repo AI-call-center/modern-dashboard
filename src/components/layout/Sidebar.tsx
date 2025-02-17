@@ -74,7 +74,7 @@ export default function Sidebar() {
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
             >
-              <item.icon
+              {item.icon && <item.icon
                 className={`mr-3 h-6 w-6 flex-shrink-0 ${
                   isActive
                     ? 'text-primary-light dark:text-primary-dark'

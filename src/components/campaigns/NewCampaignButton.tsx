@@ -1,35 +1,25 @@
 import { motion } from 'framer-motion';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 
 export default function NewCampaignButton() {
+  const navigate = useNavigate();
   return (
     <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="fixed bottom-8 right-8 p-4 rounded-full 
-        bg-gradient-to-r from-primary-light to-blue-600 
-        dark:from-primary-dark dark:to-blue-400
-        text-white shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => navigate('/campaigns/new')}
+      className="inline-flex items-center px-4 py-2 rounded-lg
+        bg-primary-light/90 dark:bg-primary-dark/90
+        text-white backdrop-blur-sm
+        border border-primary-light/50 dark:border-primary-dark/50
+        shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20
         hover:shadow-xl hover:shadow-primary-light/30 dark:hover:shadow-primary-dark/30
-        transition-shadow"
-      style={{
-        animation: 'pulse 2s infinite'
-      }}
+        transition-all duration-200
+        space-x-2"
     >
-      <PlusIcon className="h-6 w-6" />
-      <style jsx>{`
-        @keyframes pulse {
-          0% {
-            box-shadow: 0 0 0 0 rgba(var(--primary-light-rgb), 0.4);
-          }
-          70% {
-            box-shadow: 0 0 0 10px rgba(var(--primary-light-rgb), 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(var(--primary-light-rgb), 0);
-          }
-        }
-      `}</style>
+      <PlusIcon className="h-5 w-5" />
+      <span>Create campaign</span>
     </motion.button>
   );
 }

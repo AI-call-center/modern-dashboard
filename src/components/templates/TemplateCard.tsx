@@ -25,14 +25,25 @@ export default function TemplateCard({ type, title, description, onClick }: Temp
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="group relative flex flex-col h-full bg-white dark:bg-navy-800 rounded-xl p-6 cursor-pointer shadow-sm border border-gray-100 dark:border-transparent"
+      className="group relative flex flex-col h-full
+        bg-white/90 dark:bg-navy-800/90 backdrop-blur-md
+        rounded-xl p-6 cursor-pointer
+        shadow-lg shadow-gray-200/20 dark:shadow-navy-900/30
+        border border-gray-200/50 dark:border-gray-700/50
+        transition-all duration-200
+        hover:shadow-xl hover:shadow-gray-200/30 dark:hover:shadow-navy-900/40
+        hover:border-gray-300/50 dark:hover:border-gray-600/50
+        hover:bg-white/95 dark:hover:bg-navy-800/95"
     >
       {type === 'custom' ? (
         <div className="flex items-center justify-center h-12 w-12 mb-4">
           <Icon className="h-8 w-8 text-primary-light" />
         </div>
       ) : (
-        <div className="absolute top-4 right-4 px-3 py-1 text-xs rounded-full bg-gray-100 dark:bg-navy-700 text-gray-600 dark:text-gray-400">
+        <div className="absolute top-4 right-4 px-3 py-1 text-xs rounded-full
+          bg-gray-100/80 dark:bg-navy-700/80 backdrop-blur-sm
+          text-gray-600 dark:text-gray-400
+          border border-gray-200/30 dark:border-gray-700/30">
           {type.replace('-', ' ')}
         </div>
       )}
@@ -49,7 +60,13 @@ export default function TemplateCard({ type, title, description, onClick }: Temp
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="mt-6 w-full py-2 bg-primary-light dark:bg-primary-dark text-white rounded-lg text-center shadow-sm hover:shadow-md transition-shadow"
+          className="mt-6 w-full py-2.5 rounded-lg text-center
+            bg-gradient-to-r from-primary-light to-blue-500
+            dark:from-primary-dark dark:to-blue-400
+            text-white font-medium
+            shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20
+            hover:shadow-xl hover:shadow-primary-light/30 dark:hover:shadow-primary-dark/30
+            transition-all duration-200"
         >
           Get Started
         </motion.button>
@@ -57,7 +74,14 @@ export default function TemplateCard({ type, title, description, onClick }: Temp
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="mt-6 w-full py-2 bg-gray-100 dark:bg-navy-700 text-gray-900 dark:text-white rounded-lg text-center shadow-sm hover:shadow-md transition-shadow"
+          className="mt-6 w-full py-2.5 rounded-lg text-center
+            bg-gray-100/90 dark:bg-navy-700/90 backdrop-blur-sm
+            text-gray-900 dark:text-white font-medium
+            border border-gray-200/50 dark:border-gray-700/50
+            shadow-lg shadow-gray-200/20 dark:shadow-navy-900/30
+            hover:shadow-xl hover:shadow-gray-200/30 dark:hover:shadow-navy-900/40
+            hover:bg-gray-100/95 dark:hover:bg-navy-700/95
+            transition-all duration-200"
         >
           Use this Template
         </motion.button>

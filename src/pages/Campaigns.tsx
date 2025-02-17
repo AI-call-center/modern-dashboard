@@ -65,6 +65,12 @@ export default function Campaigns() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-8"
       >
+        {/* Header with Create Button */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Campaigns</h1>
+          <NewCampaignButton />
+        </div>
+
         {/* Overview Cards */}
         <CampaignOverview stats={stats} />
 
@@ -80,9 +86,6 @@ export default function Campaigns() {
           filters={filters}
           onFiltersChange={setFilters}
         />
-
-        {/* New Campaign Button */}
-        <NewCampaignButton />
       </motion.div>
     </div>
   );

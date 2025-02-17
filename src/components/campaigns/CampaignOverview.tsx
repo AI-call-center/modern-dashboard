@@ -14,10 +14,14 @@ export default function CampaignOverview({ stats }: CampaignOverviewProps) {
       {/* Running Campaigns Card */}
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className="relative overflow-hidden bg-gradient-to-br from-primary-light/10 to-blue-500/5 
-          dark:from-primary-dark/20 dark:to-blue-400/10
-          rounded-xl p-6 border border-primary-light/10 dark:border-primary-dark/20
-          shadow-lg shadow-primary-light/5 dark:shadow-primary-dark/5"
+        className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+          rounded-xl p-6 border border-gray-200/20 dark:border-gray-700/20
+          shadow-lg hover:shadow-xl transition-all duration-300
+          hover:bg-white/30 dark:hover:bg-gray-800/30 group"
+        style={{
+          background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+          boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+        }}
       >
         <div className="flex items-start justify-between">
           <div>
@@ -25,27 +29,35 @@ export default function CampaignOverview({ stats }: CampaignOverviewProps) {
               Running Campaigns
             </p>
             <h3 className="mt-2 text-3xl font-bold bg-clip-text text-transparent 
-              bg-gradient-to-r from-primary-light to-blue-600 
-              dark:from-primary-dark dark:to-blue-400
-              [text-shadow:_0_0_30px_rgb(var(--primary-light-rgb)_/_0.3)]">
+              bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300
+              group-hover:scale-105 transition-transform">
               {stats.running}
             </h3>
           </div>
-          <div className="p-3 rounded-lg bg-primary-light/10 dark:bg-primary-dark/20">
+          <div className="p-3 rounded-lg bg-gradient-to-br from-primary-light/20 to-blue-500/20 
+            dark:from-primary-dark/20 dark:to-blue-400/20 backdrop-blur-md 
+            border border-white/10 dark:border-gray-700/10 shadow-lg">
             <PlayIcon className="h-6 w-6 text-primary-light dark:text-primary-dark" />
           </div>
         </div>
-        <div className="absolute -right-6 -bottom-6 w-32 h-32 
-          bg-primary-light/5 dark:bg-primary-dark/10 rounded-full blur-2xl" />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-light/10 via-blue-500/5 to-transparent 
+          dark:from-primary-dark/10 dark:via-blue-400/5 dark:to-transparent rounded-xl filter blur-2xl opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-white/5 via-primary-light/5 to-transparent 
+          dark:from-gray-900/5 dark:via-primary-dark/5 dark:to-transparent rounded-xl" />
       </motion.div>
 
       {/* Total Campaigns Card */}
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 
-          dark:from-gray-800/50 dark:to-gray-900/50
-          rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50
-          shadow-lg shadow-gray-200/20 dark:shadow-gray-900/20"
+        className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+          rounded-xl p-6 border border-gray-200/20 dark:border-gray-700/20
+          shadow-lg hover:shadow-xl transition-all duration-300
+          hover:bg-white/30 dark:hover:bg-gray-800/30 group"
+        style={{
+          background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+          boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+        }}
       >
         <div className="flex items-start justify-between">
           <div>

@@ -1,18 +1,27 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { CogIcon } from '@heroicons/react/24/outline';
-import AgentSearchFilters from '../components/agents/AgentSearchFilters';
-import AgentModal from '../components/agents/AgentModal';
+import { 
+  PlusIcon,
+  AdjustmentsHorizontalIcon,
+  XMarkIcon,
+  Cog6ToothIcon,
+  UserGroupIcon,
+  PhoneIcon,
+  ChartBarIcon
+} from '@heroicons/react/24/outline';
+import MetricCard from '../components/agents/MetricCard';
+import SearchBar from '../components/agents/SearchBar';
+import AgentTable from '../components/agents/AgentTable';
+import AgentDetailsModal from '../components/agents/AgentDetailsModal';
 import AgentSettingsModal from '../components/agents/AgentSettingsModal';
-import CreateAgentForm from '../components/agents/create/CreateAgentForm';
 
 // Sample data
 const agentsData = [
   {
-    id: 1,
+    id: 'agent-1',
     name: 'Sales Assistant',
+    type: 'Sales',
     status: 'active',
     totalCalls: 245,
     avgDuration: '3:45',
@@ -42,8 +51,9 @@ const agentsData = [
     ],
   },
   {
-    id: 2,
+    id: 'agent-2',
     name: 'Support Agent',
+    type: 'Support',
     status: 'active',
     totalCalls: 189,
     avgDuration: '4:15',
@@ -76,31 +86,31 @@ const agentsData = [
 
 export default function Agents() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState({
-    status: '',
-    callVolume: '',
-    successRate: '',
-  });
+  const [isFilterOpen, setFilterOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<typeof agentsData[0] | null>(null);
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const filteredAgents = agentsData.filter(agent => {
-    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = !filters.status || agent.status === filters.status;
-    const matchesCallVolume = !filters.callVolume || (
-      filters.callVolume === 'high' ? agent.totalCalls > 200 :
-      filters.callVolume === 'medium' ? agent.totalCalls >= 50 && agent.totalCalls <= 200 :
-      agent.totalCalls < 50
-    );
-    const matchesSuccessRate = !filters.successRate || (
-      filters.successRate === 'high' ? agent.successRate > 90 :
-      filters.successRate === 'medium' ? agent.successRate >= 70 && agent.successRate <= 90 :
-      agent.successRate < 70
-    );
+  // Calculate metrics
+  const metrics = {
+    totalAgents: agentsData.length,
+    activeAgents: agentsData.filter(a => a.status === 'active').length,
+    totalCalls: agentsData.reduce((sum, a) => sum + a.totalCalls, 0),
+    avgSuccessRate: Math.round(
+      agentsData.reduce((sum, a) => sum + a.successRate, 0) / agentsData.length
+    ),
+  };
 
-    return matchesSearch && matchesStatus && matchesCallVolume && matchesSuccessRate;
+  const handleSearch = (query: string) => {
+    setSearchQuery(query.toLowerCase());
+  };
+
+  const filteredAgents = agentsData.filter(agent => {
+    const matchesSearch = agent.name.toLowerCase().includes(searchQuery) ||
+      agent.id.toLowerCase().includes(searchQuery) ||
+      agent.type.toLowerCase().includes(searchQuery);
+    return matchesSearch;
   });
 
   return (
@@ -144,176 +154,215 @@ export default function Agents() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg"
+          className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+            p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300
+            border border-gray-200/20 dark:border-gray-700/20
+            hover:bg-white/30 dark:hover:bg-gray-800/30
+            group"
+          style={{
+            background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+          }}
         >
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Agents</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{agentsData.length}</p>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-light/10 via-blue-500/5 to-transparent 
+            dark:from-primary-dark/10 dark:via-blue-400/5 dark:to-transparent rounded-xl filter blur-2xl opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-white/5 via-primary-light/5 to-transparent 
+            dark:from-gray-900/5 dark:via-primary-dark/5 dark:to-transparent rounded-xl" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Agents</h3>
+            <p className="mt-2 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+              from-gray-900 to-gray-700 dark:from-white dark:to-gray-300
+              group-hover:scale-105 transition-transform">{agentsData.length}</p>
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg"
+          className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+            p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300
+            border border-gray-200/20 dark:border-gray-700/20
+            hover:bg-white/30 dark:hover:bg-gray-800/30
+            group"
+          style={{
+            background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+          }}
         >
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Now</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-            {agentsData.filter(agent => agent.status === 'active').length}
-          </p>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-light/10 via-blue-500/5 to-transparent 
+            dark:from-primary-dark/10 dark:via-blue-400/5 dark:to-transparent rounded-xl filter blur-2xl opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-white/5 via-primary-light/5 to-transparent 
+            dark:from-gray-900/5 dark:via-primary-dark/5 dark:to-transparent rounded-xl" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Now</h3>
+            <p className="mt-2 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+              from-gray-900 to-gray-700 dark:from-white dark:to-gray-300
+              group-hover:scale-105 transition-transform">
+              {agentsData.filter(agent => agent.status === 'active').length}
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg"
+          className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+            p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300
+            border border-gray-200/20 dark:border-gray-700/20
+            hover:bg-white/30 dark:hover:bg-gray-800/30
+            group"
+          style={{
+            background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+          }}
         >
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Calls</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-            {agentsData.reduce((sum, agent) => sum + agent.totalCalls, 0)}
-          </p>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-light/10 via-blue-500/5 to-transparent 
+            dark:from-primary-dark/10 dark:via-blue-400/5 dark:to-transparent rounded-xl filter blur-2xl opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-white/5 via-primary-light/5 to-transparent 
+            dark:from-gray-900/5 dark:via-primary-dark/5 dark:to-transparent rounded-xl" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Calls</h3>
+            <p className="mt-2 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+              from-gray-900 to-gray-700 dark:from-white dark:to-gray-300
+              group-hover:scale-105 transition-transform">
+              {agentsData.reduce((sum, agent) => sum + agent.totalCalls, 0)}
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg"
+          className="relative overflow-hidden backdrop-blur-2xl bg-white/20 dark:bg-gray-800/20
+            p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300
+            border border-gray-200/20 dark:border-gray-700/20
+            hover:bg-white/30 dark:hover:bg-gray-800/30
+            group"
+          style={{
+            background: 'linear-gradient(169.73deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06)'
+          }}
         >
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg. Success Rate</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-            {Math.round(agentsData.reduce((sum, agent) => sum + agent.successRate, 0) / agentsData.length)}%
-          </p>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-light/10 via-blue-500/5 to-transparent 
+            dark:from-primary-dark/10 dark:via-blue-400/5 dark:to-transparent rounded-xl filter blur-2xl opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-white/5 via-primary-light/5 to-transparent 
+            dark:from-gray-900/5 dark:via-primary-dark/5 dark:to-transparent rounded-xl" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg. Success Rate</h3>
+            <p className="mt-2 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+              from-gray-900 to-gray-700 dark:from-white dark:to-gray-300
+              group-hover:scale-105 transition-transform">
+              {Math.round(agentsData.reduce((sum, agent) => sum + agent.successRate, 0) / agentsData.length)}%
+            </p>
+          </div>
         </motion.div>
       </div>
 
       <div className="mb-8">
-        <AgentSearchFilters
-          onSearch={setSearchQuery}
-          onFilterChange={setFilters}
-        />
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="flex-1">
+            <SearchBar
+              onSearch={handleSearch}
+              onFilter={() => setFilterOpen(!isFilterOpen)}
+              suggestions={["Search by name", "Search by ID", "Search by type"]}
+            />
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setFilterOpen(!isFilterOpen)}
+            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg
+              hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors
+              flex items-center space-x-2"
+          >
+            <AdjustmentsHorizontalIcon className="w-5 h-5" />
+            <span>Filters</span>
+          </motion.button>
+        </div>
+
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-6"
+            >
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                {/* Add filter controls here */}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Agent Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Total Calls
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Avg. Duration
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Success Rate
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredAgents.map((agent) => (
-              <tr key={agent.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">{agent.name}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full mr-2 ${
-                      agent.status === 'active' ? 'bg-green-500 animate-pulse' : 'bg-gray-500'
-                    }`} />
-                    <span className="text-sm text-gray-900 dark:text-white capitalize">{agent.status}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 dark:text-white">{agent.totalCalls}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 dark:text-white">{agent.avgDuration}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="w-16 h-16 relative">
-                      <svg className="w-16 h-16 transform -rotate-90">
-                        <circle
-                          className="text-gray-200 dark:text-gray-700"
-                          strokeWidth="4"
-                          stroke="currentColor"
-                          fill="transparent"
-                          r="30"
-                          cx="32"
-                          cy="32"
-                        />
-                        <circle
-                          className="text-primary-light dark:text-primary-dark"
-                          strokeWidth="4"
-                          strokeLinecap="round"
-                          stroke="currentColor"
-                          fill="transparent"
-                          r="30"
-                          cx="32"
-                          cy="32"
-                          strokeDasharray={`${agent.successRate * 1.88} 188.4`}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {agent.successRate}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  <div className="flex space-x-3">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => {
-                        setSelectedAgent(agent);
-                        setDetailsModalOpen(true);
-                      }}
-                      className="text-primary-light dark:text-primary-dark hover:text-opacity-80"
-                    >
-                      View Details
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => {
-                        setSelectedAgent(agent);
-                        setSettingsModalOpen(true);
-                      }}
-                      className="text-gray-600 dark:text-gray-400 hover:text-opacity-80"
-                    >
-                      <CogIcon className="w-5 h-5" />
-                    </motion.button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <AgentTable
+        agents={filteredAgents}
+        onViewDetails={(agentId) => {
+          const agent = filteredAgents.find(a => a.id === agentId);
+          if (agent) {
+            setSelectedAgent(agent);
+            setDetailsModalOpen(true);
+          }
+        }}
+      />
+
+      <AnimatePresence>
+        {isDetailsModalOpen && selectedAgent && (
+          <AgentDetailsModal
+            agent={selectedAgent}
+            onClose={() => setDetailsModalOpen(false)}
+            onSettingsClick={() => {
+              setDetailsModalOpen(false);
+              setSettingsModalOpen(true);
+            }}
+          />
+        )}
+
+        {isSettingsModalOpen && selectedAgent && (
+          <AgentSettingsModal
+            agent={selectedAgent}
+            onClose={() => setSettingsModalOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
 
       {selectedAgent && (
         <>
-          <AgentModal
-            isOpen={isDetailsModalOpen}
-            onClose={() => setDetailsModalOpen(false)}
+          <AgentDetailsModal
             agent={selectedAgent}
+            onClose={() => setDetailsModalOpen(false)}
+            onSettingsClick={() => {
+              setDetailsModalOpen(false);
+              setSettingsModalOpen(true);
+            }}
           />
           <AgentSettingsModal
             isOpen={isSettingsModalOpen}
             onClose={() => setSettingsModalOpen(false)}
-            agent={selectedAgent}
+            agent={{
+              name: selectedAgent.name,
+              description: selectedAgent.description || '',
+              status: selectedAgent.status,
+              workflows: selectedAgent.workflows || [],
+              integrations: selectedAgent.integrations || []
+            }}
           />
         </>
       )}

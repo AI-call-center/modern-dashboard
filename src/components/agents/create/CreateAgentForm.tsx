@@ -41,6 +41,7 @@ const steps = [
 
 export default function CreateAgentForm() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showStep, setShowStep] = useState(true);
   const [formData, setFormData] = useState<FormData>({
     basicInfo: { name: '', voice: 'Christopher', tone: 'professional' },
     behaviour: { greeting: '', prompt: '', variables: [] },
@@ -55,13 +56,21 @@ export default function CreateAgentForm() {
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
+      setShowStep(false);
+      setTimeout(() => {
+        setCurrentStep(prev => prev + 1);
+        setShowStep(true);
+      }, 200);
     }
   };
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setShowStep(false);
+      setTimeout(() => {
+        setCurrentStep(prev => prev - 1);
+        setShowStep(true);
+      }, 200);
     }
   };
 
@@ -71,99 +80,82 @@ export default function CreateAgentForm() {
   };
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 0:
-        return (
-          <BasicInfoStep
-            data={formData.basicInfo}
-            onChange={(data) => updateFormData('basicInfo', data)}
-          />
-        );
-      case 1:
-        return (
-          <BehaviourStep
-            data={formData.behaviour}
-            onChange={(data) => updateFormData('behaviour', data)}
-          />
-        );
-      case 2:
-        return (
-          <KnowledgeStep
-            data={formData.knowledge}
-            onChange={(data) => updateFormData('knowledge', data)}
-          />
-        );
-      case 3:
-        return (
-          <DataCollectionStep
-            data={formData.dataCollection}
-            onChange={(data) => updateFormData('dataCollection', data)}
-          />
-        );
-      case 4:
-        return (
-          <ActionsStep
-            data={formData.actions}
-            onChange={(data) => updateFormData('actions', data)}
-          />
-        );
-      default:
-        return null;
-    }
+    const StepComponent = (() => {
+      switch (currentStep) {
+        case 0:
+          return BasicInfoStep;
+        case 1:
+          return BehaviourStep;
+        case 2:
+          return KnowledgeStep;
+        case 3:
+          return DataCollectionStep;
+        case 4:
+          return ActionsStep;
+        default:
+          return BasicInfoStep;
+      }
+    })();
+
+    return (
+      <AnimatePresence mode="wait">
+        {showStep && (
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1"
+          >
+            <StepComponent
+              data={formData[Object.keys(formData)[currentStep] as keyof FormData]}
+              onChange={(data) => updateFormData(Object.keys(formData)[currentStep] as keyof FormData, data)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex">
-          <div className="flex">
-            <StepSidebar steps={steps} currentStep={currentStep} />
-            
-            <div className="flex-1 p-8">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentStep}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-8"
-                >
-                  {renderStep()}
-                  
-                  <div className="flex justify-between pt-6">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleBack}
-                      className={`px-6 py-2 rounded-lg text-gray-600 dark:text-gray-300 
-                        hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
-                        ${currentStep === 0 ? 'invisible' : ''}`}
-                    >
-                      Back
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={currentStep === steps.length - 1 ? handleSubmit : handleNext}
-                      className="px-6 py-2 bg-primary-light dark:bg-primary-dark text-white 
-                        rounded-lg shadow-lg hover:shadow-xl transition-shadow
-                        relative overflow-hidden"
-                    >
-                      <span className="relative z-10">
-                        {currentStep === steps.length - 1 ? 'Create Agent' : 'Next'}
-                      </span>
-                      <motion.div
-                        className="absolute inset-0 bg-white/20"
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileTap={{ scale: 2, opacity: 0.4 }}
-                        transition={{ duration: 0.5 }}
-                      />
-                    </motion.button>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+    <div className="flex h-full bg-white dark:bg-gray-900">
+      <StepSidebar
+        steps={steps}
+        currentStep={currentStep}
+        onStepClick={(step) => {
+          setShowStep(false);
+          setTimeout(() => {
+            setCurrentStep(step);
+            setShowStep(true);
+          }, 200);
+        }}
+      />
+      <div className="flex-1">
+        <div className="h-full flex flex-col">
+          <div className="flex-1 px-8 py-6">
+            {renderStep()}
+          </div>
+          <div className="px-8 py-6 border-t border-gray-200 dark:border-gray-800">
+            <div className="flex justify-between">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleBack}
+                className={`px-6 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300
+                  hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${currentStep === 0 ? 'invisible' : ''}`}
+              >
+                Back
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={currentStep === steps.length - 1 ? handleSubmit : handleNext}
+                className="px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
+              >
+                {currentStep === steps.length - 1 ? 'Create Agent' : 'Next'}
+              </motion.button>
             </div>
           </div>
         </div>

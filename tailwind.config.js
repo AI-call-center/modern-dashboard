@@ -7,6 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        navy: {
+          700: '#1B2B4B',
+          800: '#151E35',
+          900: '#0F1627',
+        },
         primary: {
           light: '#1E90FF',
           dark: '#00BFFF',

@@ -4,72 +4,66 @@ import TemplateCard from '../components/templates/TemplateCard';
 import CreateAgentCard from '../components/templates/CreateAgentCard';
 import SearchFilters from '../components/templates/SearchFilters';
 
-const templates = [
+interface Template {
+  id: string;
+  type: 'custom' | 'health-care' | 'retail' | 'education' | 'real-estate' | 'corporate' | 'laboratory';
+  title: string;
+  description: string;
+}
+
+const templates: Template[] = [
   {
-    id: 1,
-    title: 'Restaurant Staff',
-    description: 'Professional, courteous assistant for scheduling and inquiries related to restaurant operations.',
-    inboundUseCase: 'Handle reservation requests and general inquiries',
-    outboundUseCase: 'Confirm reservations and send follow-up communications',
-    industry: 'restaurant',
+    id: 'custom',
+    type: 'custom',
+    title: 'Create Your Own AI Agent',
+    description: 'Create your own AI agent from scratch, tailored to your business, your products, your knowledge, your goals, etc.',
   },
   {
-    id: 2,
+    id: 'healthcare',
+    type: 'health-care',
     title: 'Healthcare Practice',
-    description: 'Professional, courteous assistant for scheduling and inquiries related to medical appointments.',
-    inboundUseCase: 'Schedule appointments and handle patient inquiries',
-    outboundUseCase: 'Send appointment reminders and follow-up calls',
-    industry: 'healthcare',
+    description: 'Perfect for medical practices, clinics, and healthcare providers. Handles appointment scheduling and patient inquiries.',
   },
   {
-    id: 3,
-    title: 'Home Care',
-    description: 'Professional, courteous assistant for scheduling and inquiries related to home care services.',
-    inboundUseCase: 'Handle service requests and scheduling',
-    outboundUseCase: 'Conduct follow-up calls and satisfaction surveys',
-    industry: 'homecare',
+    id: 'retail',
+    type: 'retail',
+    title: 'Retail Assistant',
+    description: 'Ideal for retail businesses. Handles product inquiries, order status, and customer support.',
   },
   {
-    id: 4,
-    title: 'Hotel',
-    description: 'Professional, courteous assistant for scheduling and inquiries related to hotel bookings.',
-    inboundUseCase: 'Handle booking requests and guest inquiries',
-    outboundUseCase: 'Send booking confirmations and pre-arrival communications',
-    industry: 'hotel',
+    id: 'education',
+    type: 'education',
+    title: 'Education Support',
+    description: 'Designed for educational institutions. Manages student inquiries and administrative tasks.',
   },
   {
-    id: 5,
-    title: 'E-commerce',
-    description: 'Professional, courteous assistant for order inquiries and customer support.',
-    inboundUseCase: 'Handle order inquiries and product questions',
-    outboundUseCase: 'Collect customer feedback and send order updates',
-    industry: 'ecommerce',
+    id: 'realestate',
+    type: 'real-estate',
+    title: 'Real Estate Agent',
+    description: 'Perfect for real estate agencies. Handles property inquiries and scheduling viewings.',
   },
   {
-    id: 6,
-    title: 'Customer Support',
-    description: 'Professional, courteous assistant for customer inquiries and issue resolution.',
-    inboundUseCase: 'Handle customer support requests and troubleshooting',
-    outboundUseCase: 'Conduct follow-up calls and resolution confirmation',
-    industry: 'support',
+    id: 'corporate',
+    type: 'corporate',
+    title: 'Corporate Support',
+    description: 'Ideal for businesses. Manages customer service, sales inquiries, and support tickets.',
+  },
+  {
+    id: 'laboratory',
+    type: 'laboratory',
+    title: 'Lab Assistant',
+    description: 'Perfect for research labs and testing facilities. Manages schedules and equipment tracking.',
   },
 ];
 
 export default function Templates() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState({
-    industry: '',
-    useCase: '',
-    complexity: '',
-  });
+  const [selectedType, setSelectedType] = useState<Template['type'] | ''>('');
 
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesIndustry = !filters.industry || template.industry === filters.industry;
-    
-    return matchesSearch && matchesIndustry;
+    return matchesSearch;
   });
 
   const containerVariants = {
@@ -84,57 +78,73 @@ export default function Templates() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          AI Agent Templates
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Choose from our pre-built templates or create your own custom AI agent
-        </p>
-      </motion.div>
+      <div className="space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            AI Agent Templates
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Choose from our pre-built templates or create your own custom AI agent
+          </p>
+        </motion.div>
 
-      <div className="mb-8">
-        <SearchFilters
-          onSearch={setSearchQuery}
-          onFilterChange={setFilters}
-        />
-      </div>
-
-      <div className="mb-12">
-        <CreateAgentCard />
-      </div>
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        {filteredTemplates.map((template) => (
-          <motion.div
-            key={template.id}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-          >
-            <TemplateCard
-              title={template.title}
-              description={template.description}
-              inboundUseCase={template.inboundUseCase}
-              outboundUseCase={template.outboundUseCase}
-              onSelect={() => {
-                // Handle template selection
-                console.log('Selected template:', template.title);
-              }}
+        <div className="relative">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search templates..."
+              className="w-full pl-10 pr-4 py-3 rounded-lg bg-navy-800 text-white border-none
+                placeholder-gray-400 focus:ring-2 focus:ring-primary-light focus:outline-none"
             />
-          </motion.div>
-        ))}
-      </motion.div>
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {filteredTemplates.map((template) => (
+            <motion.div
+              key={template.id}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+            >
+              <TemplateCard
+                type={template.type}
+                title={template.title}
+                description={template.description}
+                onClick={() => {
+                  // Handle template selection
+                  console.log('Selected template:', template.title);
+                }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }

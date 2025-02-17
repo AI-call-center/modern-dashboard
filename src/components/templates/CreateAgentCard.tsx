@@ -1,39 +1,47 @@
 import { motion } from 'framer-motion';
-import { SparklesIcon } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/outline';
 
-export default function CreateAgentCard() {
+interface CreateAgentCardProps {
+  title: string;
+  description: string;
+  category: string;
+  rating: number;
+  onClick: () => void;
+}
+
+export default function CreateAgentCard({ title, description, category, rating, onClick }: CreateAgentCardProps) {
   return (
     <motion.div
-      className="bg-gradient-to-br from-primary-light to-blue-600 dark:from-primary-dark dark:to-blue-800 
-                 rounded-xl shadow-lg overflow-hidden text-white p-6"
-      whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className="bg-white dark:bg-gray-800 rounded-xl p-6 cursor-pointer border border-gray-200 
+        dark:border-gray-700 hover:border-cyan-500 dark:hover:border-cyan-500 transition-colors"
     >
-      <motion.div
-        initial={{ opacity: 0.5 }}
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
-        style={{ transform: 'skewX(-20deg) translateX(-100%)' }}
-      />
-
-      <div className="relative">
-        <h2 className="text-2xl font-bold mb-3">Create Your Own AI Agent</h2>
-        <p className="text-white/90 mb-6">
-          Create your own AI agent from scratch, tailored to your business, your products, 
-          your knowledge, your goals, etc.
-        </p>
-
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="inline-flex items-center px-6 py-3 bg-white text-primary-light dark:text-primary-dark 
-                   rounded-lg font-medium transition-shadow hover:shadow-lg focus:outline-none 
-                   focus:ring-2 focus:ring-white focus:ring-opacity-50"
-        >
-          <SparklesIcon className="w-5 h-5 mr-2" />
-          Get Started
-        </motion.button>
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
+        </div>
+        <span className="px-3 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-700 
+          text-gray-600 dark:text-gray-400">
+          {category}
+        </span>
+      </div>
+      <div className="mt-4 flex items-center space-x-1">
+        {[...Array(5)].map((_, i) => (
+          <StarIcon
+            key={i}
+            className={`w-4 h-4 ${
+              i < rating
+                ? 'text-yellow-400 fill-current'
+                : 'text-gray-300 dark:text-gray-600'
+            }`}
+          />
+        ))}
+        <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+          {rating}/5
+        </span>
       </div>
     </motion.div>
   );

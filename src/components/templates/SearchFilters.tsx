@@ -1,111 +1,93 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
 
 interface SearchFiltersProps {
-  onSearch: (query: string) => void;
-  onFilterChange: (filters: FilterState) => void;
+  search: string;
+  onSearchChange: (value: string) => void;
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+  selectedRating: number | null;
+  onRatingChange: (rating: number | null) => void;
 }
 
-interface FilterState {
-  industry: string;
-  useCase: string;
-  complexity: string;
-}
+const categories = ['All', 'Customer Service', 'Sales', 'Technical Support', 'Education'];
 
-export default function SearchFilters({ onSearch, onFilterChange }: SearchFiltersProps) {
-  const [isFiltersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState<FilterState>({
-    industry: '',
-    useCase: '',
-    complexity: ''
-  });
-
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
-  };
-
+export default function SearchFilters({
+  search,
+  onSearchChange,
+  selectedCategory,
+  onCategoryChange,
+  selectedRating,
+  onRatingChange,
+}: SearchFiltersProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search templates..."
-            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 
-                     dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 
-                     focus:ring-primary-light dark:focus:ring-primary-dark"
-            onChange={(e) => onSearch(e.target.value)}
-          />
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
-                   rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
-          onClick={() => setFiltersOpen(!isFiltersOpen)}
-        >
-          <FunnelIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-        </motion.button>
+    <div className="space-y-6">
+      {/* Search Input */}
+      <div className="relative">
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search templates..."
+          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+            bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+            focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+            placeholder-gray-400 dark:placeholder-gray-500"
+        />
       </div>
 
-      <AnimatePresence>
-        {isFiltersOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 space-y-4 overflow-hidden"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <select
-                className="w-full p-2 bg-white dark:bg-gray-800 border border-gray-200 
-                         dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 
-                         focus:ring-primary-light dark:focus:ring-primary-dark"
-                value={filters.industry}
-                onChange={(e) => handleFilterChange('industry', e.target.value)}
-              >
-                <option value="">All Industries</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="homecare">Home Care</option>
-                <option value="hotel">Hotel</option>
-                <option value="ecommerce">E-commerce</option>
-                <option value="support">Customer Support</option>
-              </select>
+      {/* Filters Section */}
+      <div>
+        <div className="flex items-center space-x-2 mb-4">
+          <FunnelIcon className="w-5 h-5 text-gray-400" />
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Filters</h3>
+        </div>
 
-              <select
-                className="w-full p-2 bg-white dark:bg-gray-800 border border-gray-200 
-                         dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 
-                         focus:ring-primary-light dark:focus:ring-primary-dark"
-                value={filters.useCase}
-                onChange={(e) => handleFilterChange('useCase', e.target.value)}
+        {/* Categories */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">Category</h4>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <motion.button
+                key={category}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onCategoryChange(category)}
+                className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-cyan-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
               >
-                <option value="">All Use Cases</option>
-                <option value="inbound">Inbound Calls</option>
-                <option value="outbound">Outbound Calls</option>
-                <option value="both">Both</option>
-              </select>
+                {category}
+              </motion.button>
+            ))}
+          </div>
+        </div>
 
-              <select
-                className="w-full p-2 bg-white dark:bg-gray-800 border border-gray-200 
-                         dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 
-                         focus:ring-primary-light dark:focus:ring-primary-dark"
-                value={filters.complexity}
-                onChange={(e) => handleFilterChange('complexity', e.target.value)}
+        {/* Rating Filter */}
+        <div className="mt-4 space-y-2">
+          <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">Minimum Rating</h4>
+          <div className="flex items-center space-x-4">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <motion.button
+                key={rating}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => onRatingChange(selectedRating === rating ? null : rating)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                  selectedRating === rating
+                    ? 'bg-yellow-400 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
               >
-                <option value="">All Complexity Levels</option>
-                <option value="basic">Basic</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                {rating}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

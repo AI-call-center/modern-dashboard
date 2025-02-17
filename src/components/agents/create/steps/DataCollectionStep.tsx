@@ -31,10 +31,10 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
     <div className="space-y-8">
 
 
-      <div className="rounded-xl bg-gray-900/40 p-6 space-y-4">
+      <div className="rounded-xl bg-gray-100 dark:bg-gray-900/40 p-6 space-y-4">
         <div>
-          <h3 className="text-xl font-medium text-white">Post call variables</h3>
-          <p className="mt-1 text-gray-400 text-sm">
+          <h3 className="text-xl font-medium text-gray-900 dark:text-white">Post call variables</h3>
+          <p className="mt-1 text-gray-600 dark:text-gray-400 text-sm">
             Define the variables that the AI will extract from the call and trigger automation.
           </p>
         </div>
@@ -46,15 +46,15 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-gray-800/50 rounded-lg p-4 space-y-4"
+              className="bg-white dark:bg-gray-800/50 shadow-sm dark:shadow-none rounded-lg p-4 space-y-4"
             >
               <div className="flex items-center justify-between">
-                <h4 className="text-white">Variable</h4>
+                <h4 className="text-gray-900 dark:text-white">Variable</h4>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => removeVariable(index)}
-                  className="text-red-500 hover:text-red-400 transition-colors"
+                  className="text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                 >
                   <TrashIcon className="h-5 w-5" />
                 </motion.button>
@@ -63,28 +63,28 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">Name</label>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Name</label>
                     <input
                       type="text"
                       value={variable.name}
                       onChange={(e) => updateVariable(index, 'name', e.target.value)}
                       placeholder="Variable name"
                       className="w-full px-3 py-2 rounded-md
-                        bg-gray-900/40 text-gray-200 placeholder-gray-500
-                        border border-gray-700 focus:border-navy-400
-                        focus:ring-1 focus:ring-navy-400
+                        bg-gray-50 dark:bg-gray-900/40 text-gray-900 dark:text-gray-200 
+                        placeholder-gray-500 border border-gray-200 dark:border-gray-700
+                        focus:border-navy-400 focus:ring-1 focus:ring-navy-400
                         text-sm transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">Type</label>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Type</label>
                     <select
                       value={variable.type}
                       onChange={(e) => updateVariable(index, 'type', e.target.value)}
                       className="w-full px-3 py-2 rounded-md appearance-none
-                        bg-gray-900/40 text-gray-200
-                        border border-gray-700 focus:border-navy-400
-                        focus:ring-1 focus:ring-navy-400
+                        bg-gray-50 dark:bg-gray-900/40 text-gray-900 dark:text-gray-200
+                        border border-gray-200 dark:border-gray-700
+                        focus:border-navy-400 focus:ring-1 focus:ring-navy-400
                         text-sm transition-colors"
                     >
                       <option value="string">string</option>
@@ -97,16 +97,16 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
                 </div>
 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">Description</label>
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Description</label>
                   <input
                     type="text"
                     value={variable.description}
                     onChange={(e) => updateVariable(index, 'description', e.target.value)}
                     placeholder="Describe variable such that agent can understand how to"
                     className="w-full px-3 py-2 rounded-md
-                      bg-gray-900/40 text-gray-200 placeholder-gray-500
-                      border border-gray-700 focus:border-navy-400
-                      focus:ring-1 focus:ring-navy-400
+                      bg-gray-50 dark:bg-gray-900/40 text-gray-900 dark:text-gray-200
+                      placeholder-gray-500 border border-gray-200 dark:border-gray-700
+                      focus:border-navy-400 focus:ring-1 focus:ring-navy-400
                       text-sm transition-colors"
                   />
                 </div>
@@ -120,8 +120,8 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
           whileTap={{ scale: 0.99 }}
           onClick={addVariable}
           className="w-32 flex items-center justify-center space-x-2 px-4 py-2
-            text-gray-200 text-sm font-medium
-            bg-white/5 hover:bg-white/10
+            text-gray-600 dark:text-gray-200 text-sm font-medium
+            bg-gray-200/50 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10
             rounded-md transition-all duration-150"
         >
           Add Row
@@ -131,7 +131,7 @@ export default function DataCollectionStep({ data, onChange }: DataCollectionSte
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-8 text-gray-500"
+            className="text-center py-8 text-gray-500 dark:text-gray-400"
           >
             No variables added yet. Click "Add Row" to start collecting data.
           </motion.div>
